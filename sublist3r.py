@@ -167,8 +167,9 @@ class enumratorBase(object):
     def send_req(self, query, page_no=1):
 
         url = self.base_url.format(query=query, page_no=page_no)
+        proxies = {"http": "http://127.0.0.1:8001","https": "http://127.0.0.1:8001"}
         try:
-            resp = self.session.get(url, headers=self.headers, timeout=self.timeout)
+            resp = self.session.get(url, headers=self.headers, timeout=self.timeout, proxies = proxies)
         except Exception:
             resp = None
         return self.get_response(resp)
@@ -269,7 +270,7 @@ class enumratorBaseThreaded(multiprocessing.Process, enumratorBase):
 class GoogleEnum(enumratorBaseThreaded):
     def __init__(self, domain, subdomains=None, q=None, silent=False, verbose=True):
         subdomains = subdomains or []
-        base_url = "https://google.com/search?q={query}&btnG=Search&hl=en-US&biw=&bih=&gbv=1&start={page_no}&filter=0"
+        base_url = "https://www.google.com/search?q={query}&start={page_no}&filter=0"
         self.engine_name = "Google"
         self.MAX_DOMAINS = 11
         self.MAX_PAGES = 200
@@ -293,6 +294,7 @@ class GoogleEnum(enumratorBaseThreaded):
                     self.subdomains.append(subdomain.strip())
         except Exception:
             pass
+        print links_list
         return links_list
 
     def check_response_errors(self, resp):
@@ -527,8 +529,9 @@ class NetcraftEnum(enumratorBaseThreaded):
 
     def req(self, url, cookies=None):
         cookies = cookies or {}
+        proxies = {"http": "http://127.0.0.1:8001","https": "http://127.0.0.1:8001"}
         try:
-            resp = self.session.get(url, headers=self.headers, timeout=self.timeout, cookies=cookies)
+            resp = self.session.get(url, headers=self.headers, timeout=self.timeout, cookies=cookies, proxies = proxies)
         except Exception as e:
             self.print_(e)
             resp = None
@@ -620,11 +623,12 @@ class DNSdumpster(enumratorBaseThreaded):
         params = params or {}
         headers = dict(self.headers)
         headers['Referer'] = 'https://dnsdumpster.com'
+        proxies = {"http": "http://127.0.0.1:8001","https": "http://127.0.0.1:8001"}
         try:
             if req_method == 'GET':
-                resp = self.session.get(url, headers=headers, timeout=self.timeout)
+                resp = self.session.get(url, headers=headers, timeout=self.timeout, proxies=proxies)
             else:
-                resp = self.session.post(url, data=params, headers=headers, timeout=self.timeout)
+                resp = self.session.post(url, data=params, headers=headers, timeout=self.timeout, proxies=proxies)
         except Exception as e:
             self.print_(e)
             resp = None
@@ -678,8 +682,9 @@ class Virustotal(enumratorBaseThreaded):
 
     # the main send_req need to be rewritten
     def send_req(self, url):
+        proxies = {"http": "http://127.0.0.1:8001","https": "http://127.0.0.1:8001"}
         try:
-            resp = self.session.get(url, headers=self.headers, timeout=self.timeout)
+            resp = self.session.get(url, headers=self.headers, timeout=self.timeout, proxies=proxies)
         except Exception as e:
             self.print_(e)
             resp = None
@@ -720,8 +725,9 @@ class ThreatCrowd(enumratorBaseThreaded):
         return
 
     def req(self, url):
+        proxies = {"http": "http://127.0.0.1:8001","https": "http://127.0.0.1:8001"}
         try:
-            resp = self.session.get(url, headers=self.headers, timeout=self.timeout)
+            resp = self.session.get(url, headers=self.headers, timeout=self.timeout, proxies=proxies)
         except Exception:
             resp = None
 
@@ -759,8 +765,9 @@ class CrtSearch(enumratorBaseThreaded):
         return
 
     def req(self, url):
+        proxies = {"http": "http://127.0.0.1:8001","https": "http://127.0.0.1:8001"}
         try:
-            resp = self.session.get(url, headers=self.headers, timeout=self.timeout)
+            resp = self.session.get(url, headers=self.headers, timeout=self.timeout, proxies=proxies)
         except Exception:
             resp = None
 
@@ -804,8 +811,9 @@ class PassiveDNS(enumratorBaseThreaded):
         return
 
     def req(self, url):
+        proxies = {"http": "http://127.0.0.1:8001","https": "http://127.0.0.1:8001"}
         try:
-            resp = self.session.get(url, headers=self.headers, timeout=self.timeout)
+            resp = self.session.get(url, headers=self.headers, timeout=self.timeout, proxies=proxies)
         except Exception as e:
             resp = None
 
