@@ -167,6 +167,7 @@ class enumratorBase(object):
     def send_req(self, query, page_no=1):
 
         url = self.base_url.format(query=query, page_no=page_no)
+
         proxies = {"http": "http://127.0.0.1:8001","https": "http://127.0.0.1:8001"}
         try:
             resp = self.session.get(url, headers=self.headers, timeout=self.timeout, proxies = proxies)
@@ -265,6 +266,7 @@ class enumratorBaseThreaded(multiprocessing.Process, enumratorBase):
         domain_list = self.enumerate()
         for domain in domain_list:
             self.q.append(domain)
+
 
 
 class GoogleEnum(enumratorBaseThreaded):
