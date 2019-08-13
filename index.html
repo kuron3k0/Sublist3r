@@ -1,0 +1,275 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="generator" content="VirusTotal"><meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1,user-scalable=yes"><title>VirusTotal</title><meta name="description" content="VirusTotal"><base href="/gui/"><link rel="icon" href="images/favicon.png"><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#3f51b5"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="VirusTotal"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="VirusTotal"><link rel="apple-touch-icon" href="images/manifest/icon-48x48.png"><link rel="apple-touch-icon" sizes="72x72" href="images/manifest/icon-72x72.png"><link rel="apple-touch-icon" sizes="96x96" href="images/manifest/icon-96x96.png"><link rel="apple-touch-icon" sizes="144x144" href="images/manifest/icon-144x144.png"><link rel="apple-touch-icon" sizes="192x192" href="images/manifest/icon-192x192.png"><meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png"><meta name="msapplication-TileColor" content="#3f51b5"><meta name="msapplication-tap-highlight" content="no"><meta name="referrer" content="origin"></head><body><custom-style><style>html, body {
+        /* Import the font here too to avoid font loading effects */
+        @import url('https://fonts.gstatic.com/s/googlesans/v14/4UaGrENHsxJlGDuGo1OIlL3Owp5eKQtG.woff2');
+
+        /* Global font sizes */
+        --vt-body-font-size: 13px;
+
+        /* Global font color */
+        --vt-body-text-color: var(--vt-primary-text-color, #333);
+        --vt-link-hover-color: var(--vt-blue-500);
+
+        font-family: var(--vt-font-family); /* From vt-styles/typography */
+        font-size: var(--vt-body-font-size);
+        color: var(--vt-body-text-color);
+      }
+
+      body {
+        margin: 0;
+        line-height: 1.5;
+        background-color: #fff;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        color: var(--vt-body-text-color);
+      }
+
+      /** Take into account that every component launching a iron-overlay-backdrop
+        will use this z-index, so our own components must be relative to this for being
+        overlayed or not
+      **/
+      iron-overlay-backdrop{
+        z-index:101 !important;
+      }
+
+      #ux-trick {
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        z-index: 102;
+        background: white;
+        transition: opacity ease-in 0.2s;
+        margin: 0 auto;
+        padding-top: 51px;
+        text-align: center;
+        -webkit-animation: fadein 3s; /* Safari, Chrome and Opera > 12.1 */
+        -moz-animation: fadein 3s; /* Firefox < 16 */
+        -ms-animation: fadein 3s; /* Internet Explorer */
+        -o-animation: fadein 3s; /* Opera < 12.1 */
+        animation: fadein 3s;
+      }
+      #ux-trick img{
+        height: 80px;
+      }
+      @media (max-width: 576px) {
+        #ux-trick img{
+          width: 90%;
+        }
+      }
+
+      .vt-loading {
+        margin: 0 auto;
+        width: 60px;
+        height: 60px;
+        text-align: center;
+        font-size: 10px;
+      }
+
+      .vt-loading div {
+        background-color: #394EFF;
+        height: 100%;
+        width: 7px;
+        margin: 0 1px;
+        display: inline-block;
+        -webkit-animation: vt-loading 1.2s infinite ease-in-out;
+        animation: vt-loading 1.2s infinite ease-in-out;
+        will-change: transform;
+      }
+
+      .vt-loading .vt-loading2 {
+        animation-delay: -1.1s;
+      }
+      .vt-loading .vt-loading3 {
+        animation-delay: -1s;
+      }
+      .vt-loading .vt-loading4 {
+        animation-delay: -0.9s;
+      }
+      .vt-loading .vt-loading5 {
+        animation-delay: -0.8s;
+      }
+
+      @-webkit-keyframes vt-loading {
+        0%, 40%, 100% {
+          -webkit-transform: scaleY(0.5);
+                  transform: scaleY(0.5); }
+
+        20% {
+          -webkit-transform: scaleY(1);
+                  transform: scaleY(1); } }
+
+      @keyframes vt-loading {
+        0%, 40%, 100% {
+          -webkit-transform: scaleY(0.5);
+                  transform: scaleY(0.5); }
+
+        20% {
+          -webkit-transform: scaleY(1);
+                  transform: scaleY(1); } }
+
+      #retro {
+        margin-top: 15px;
+        font-size: 12px;
+      }
+
+      /**
+       * Former shared styles. TODO(luis,dani): extract whatever mixins might
+       * make sense to share across all vt apps and place it in a theme.
+       */
+      html, body{
+        /* Components body font colors */
+        --vt-ui-detections-list-body-color: var(--vt-body-text-color);
+        --vt-ui-key-val-table-property-list-label-color: var(--vt-body-text-color);
+        --vt-ui-key-val-table-property-list-value-color: var(--vt-body-text-color);
+        --vt-ui-list-body-color: var(--vt-body-text-color);
+        --vt-ui-list-link-hover-color: var(--vt-link-hover-color);
+        --vt-ui-detections-ratio-body-color: var(--vt-body-text-color);
+        --vt-ui-comment-color: var(--vt-body-text-color);
+        --vt-ui-comment-link-color: var(--vt-body-text-color);
+        --vt-ui-select-color: var(--vt-body-text-color);
+        --vt-ui-checkbox-label-color: var(--vt-body-text-color);
+        --vt-ui-expandable-detail-list-color: var(--vt-body-text-color);
+        --vt-ui-expandable-detail-list-link-hover-color: var(--vt-link-hover-color);
+
+        /* Components sizes */
+        --vt-ui-simple-expandable-list-font-size: var(--vt-body-font-size);
+        --vt-ui-key-val-table-property-list-font-size: var(--vt-body-font-size);
+        --vt-ui-expandable-entry-font-size: var(--vt-body-font-size);
+        --item-report-font-size-default: var(--vt-body-font-size);
+        --vt-ui-detections-list-font-size: var(--vt-body-font-size);
+
+        /* Components mixins */
+        --vt-ui-expandable-detail-list-link: { @apply --link };
+        --vt-ui-expandable-detail-list-link-hover: { @apply --link-hover };
+        --vt-ui-key-val-expandable-list-link: { @apply --link };
+        --vt-ui-key-val-expandable-list-link-hover: { @apply --link-hover };
+
+
+        /* Pivot link style definition */
+        --pivot-link: {
+          @apply --link;
+        };
+
+        --pivot-link-hover: {
+          @apply --link-hover;
+          cursor: pointer;
+        };
+
+        /* pivot cursor on chips when clickable*/
+        --vt-ui-chips-cursor: var(--intelligence-pivot-cursor);
+
+        /* Setting pivot link style to components */
+        --vt-ui-generic-list-styled-link:{
+          @apply --pivot-link;
+        };
+
+        --vt-ui-generic-list-styled-link-hover:{
+          @apply --pivot-link-hover;
+        };
+
+        --vt-ui-key-val-table-styled-link:{
+          @apply --pivot-link;
+        };
+
+        --vt-ui-key-val-table-styled-link-hover:{
+          @apply --pivot-link-hover;
+        };
+
+        --vt-ui-simple-expandable-list-link: {
+          @apply --pivot-link;
+        };
+
+        --vt-ui-simple-expandable-list-link-hover: {
+          @apply --pivot-link-hover;
+        };
+
+        /* Other components styles */
+
+        --vt-ui-checkbox-label-color: var(--vt-grey-600);
+        --vt-ui-checkbox-unchecked-color: var(--vt-grey-600);
+        --vt-ui-checkbox-checked-color: var(--vt-blue-500);
+        --vt-ui-checkbox-checked-color: var(--vt-blue-500);
+
+
+        --vt-ui-expandable-detail-content-mixin:{
+          margin: 10px 40px;
+          padding-left: 10px;
+          border-left: 1px solid var(--vt-grey-2);
+        };
+
+        --vt-ui-main-generic-report-mixin: {
+          height: 234px;
+          background: url('../images/top-block.svg') no-repeat;
+          background-size: cover;
+          position: absolute;
+          left: 0;
+          right: 0;
+          border-bottom: 1px solid var(--vt-grey-2);
+          z-index: -1;
+        };
+
+        --vt-dialog-title: {
+          font-size: 18px;
+        };
+
+        --vt-ui-toolbar-icon-size: 28px;
+
+        --link-section:{
+          color: var(--vt-body-text-color);
+          text-decoration: none;
+        };
+
+        --link-section-hover:{
+          text-decoration: none;
+          color: var(--vt-link-hover-color);
+        };
+
+        --link-section-active:{
+          text-decoration: none;
+          color: var(--vt-link-hover-color);
+          font-weight: bold;
+        };
+
+        --link:{
+          color: var(--vt-body-text-color);
+          text-decoration: none;
+        };
+
+        --link-hover:{
+          color: var(--vt-link-hover-color);
+          text-decoration: none;
+        };
+
+        --link-secondary:{
+          color: var(--vt-body-text-color);
+          border-bottom: 1px solid var(--vt-link-hover-color);
+          text-decoration: none;
+        };
+
+        --link-secondary-hover:{
+          text-decoration: none;
+          color: var(--vt-link-hover-color);
+        };
+
+        --chip-for-tabs:{
+          border-radius: 10px;
+          color: white;
+          width: 24px;
+          text-align: center;
+          margin-left: 10px;
+          font-size: 10px;
+          line-height: 20px;
+          animation: grey-pulse 2s 10;
+          background: var(--vt-body-text-color);
+        };
+
+        --skeleton-animation: skeleton-loading 2s ease infinite;
+
+        --vt-ui-dropdown-content-border: none;
+
+        --max-page-width: 1300px;
+
+        --vt-ui-code-block-mixin: {
+          background: var(--vt-grey-25);
+        };
+
+      }</style></custom-style><div id="ux-trick"><img src="images/logo.svg" alt="VirusTotal"><div class="vt-loading"><div class="vt-loading1"></div><div class="vt-loading2"></div><div class="vt-loading3"></div><div class="vt-loading4"></div><div class="vt-loading5"></div></div><div id="retro" style="display: none">VT not loading? Try our <a id="oldBrowsersAnchor" href="https://www.virustotal.com/old-browsers/">minimal interface</a> for old browsers instead.</div></div><script>var _typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};!function(e){function t(e){return p.typeof=t="function"==typeof Symbol&&"symbol"===_typeof(Symbol.iterator)?function(e){return void 0===e?"undefined":_typeof(e)}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":void 0===e?"undefined":_typeof(e)},t(e)}function r(e){function t(n,o){try{var i=e[n](o),u=i.value,c=u instanceof p.AwaitValue;Promise.resolve(c?u.wrapped:u).then(function(e){return c?void t("next",e):void r(i.done?"return":"normal",e)},function(e){t("throw",e)})}catch(e){r("throw",e)}}function r(e,r){switch(e){case"return":n.resolve({value:r,done:!0});break;case"throw":n.reject(r);break;default:n.resolve({value:r,done:!1})}(n=n.next)?t(n.key,n.arg):o=null}var n,o;this._invoke=function(e,r){return new Promise(function(i,u){var c={key:e,arg:r,resolve:i,reject:u,next:null};o?o=o.next=c:(n=o=c,t(e,r))})},"function"!=typeof e.return&&(this.return=void 0)}function n(e,t,r,n,o,i,u){try{var c=e[i](u),a=c.value}catch(e){return void r(e)}c.done?t(a):Promise.resolve(a).then(n,o)}function o(e,t){for(var r,n=0;n<t.length;n++)(r=t[n]).enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}function i(){return p.extends=i=Object.assign||function(e){for(var t,r=1;r<arguments.length;r++)for(var n in t=arguments[r])Object.prototype.hasOwnProperty.call(t,n)&&(e[n]=t[n]);return e},i.apply(this,arguments)}function u(e){return p.getPrototypeOf=u=Object.setPrototypeOf?Object.getPrototypeOf:function(e){return e.__proto__||Object.getPrototypeOf(e)},u(e)}function c(e,t){return p.setPrototypeOf=c=Object.setPrototypeOf||function(e,t){return e.__proto__=t,e},c(e,t)}function a(){return p.construct=a=function(){if("undefined"==typeof Reflect||!Reflect.construct)return!1;if(Reflect.construct.sham)return!1;if("function"==typeof Proxy)return!0;try{return Date.prototype.toString.call(Reflect.construct(Date,[],function(){})),!0}catch(e){return!1}}()?Reflect.construct:function(e,t,r){var n=[null];n.push.apply(n,t);var o=new(Function.bind.apply(e,n));return r&&p.setPrototypeOf(o,r.prototype),o},a.apply(null,arguments)}function f(e){var t="function"==typeof Map?new Map:void 0;return p.wrapNativeSuper=f=function(e){function r(){return p.construct(e,arguments,p.getPrototypeOf(this).constructor)}if(null===e||!p.isNativeFunction(e))return e;if("function"!=typeof e)throw new TypeError("Super expression must either be null or a function");if(void 0!==t){if(t.has(e))return t.get(e);t.set(e,r)}return r.prototype=Object.create(e.prototype,{constructor:{value:r,enumerable:!1,writable:!0,configurable:!0}}),p.setPrototypeOf(r,e)},f(e)}function l(e,t,r){return p.get=l="undefined"!=typeof Reflect&&Reflect.get?Reflect.get:function(e,t,r){var n=p.superPropBase(e,t);if(n){var o=Object.getOwnPropertyDescriptor(n,t);return o.get?o.get.call(r):o.value}},l(e,t,r||e)}function y(e,t,r,n){return(y="undefined"!=typeof Reflect&&Reflect.set?Reflect.set:function(e,t,r,n){var o,i=p.superPropBase(e,t);if(i){if((o=Object.getOwnPropertyDescriptor(i,t)).set)return o.set.call(n,r),!0;if(!o.writable)return!1}if(o=Object.getOwnPropertyDescriptor(n,t)){if(!o.writable)return!1;o.value=r,Object.defineProperty(n,t,o)}else p.defineProperty(n,t,r);return!0})(e,t,r,n)}var p=("undefined"===typeof global?self:global).babelHelpers={};p.typeof=t,p.asyncIterator=function(e){var t;if("undefined"!=typeof Symbol){if(Symbol.asyncIterator&&null!=(t=e[Symbol.asyncIterator]))return t.call(e);if(Symbol.iterator&&null!=(t=e[Symbol.iterator]))return t.call(e)}throw new TypeError("Object is not async iterable")},p.AwaitValue=function(e){this.wrapped=e},"function"==typeof Symbol&&Symbol.asyncIterator&&(r.prototype[Symbol.asyncIterator]=function(){return this}),r.prototype.next=function(e){return this._invoke("next",e)},r.prototype.throw=function(e){return this._invoke("throw",e)},r.prototype.return=function(e){return this._invoke("return",e)},p.AsyncGenerator=r,p.wrapAsyncGenerator=function(e){return function(){return new p.AsyncGenerator(e.apply(this,arguments))}},p.awaitAsyncGenerator=function(e){return new p.AwaitValue(e)},p.asyncGeneratorDelegate=function(e,t){function r(r,n){return o=!0,n=new Promise(function(t){t(e[r](n))}),{done:!1,value:t(n)}}var n={},o=!1;return"function"==typeof Symbol&&Symbol.iterator&&(n[Symbol.iterator]=function(){return this}),n.next=function(e){return o?(o=!1,e):r("next",e)},"function"==typeof e.throw&&(n.throw=function(e){if(o)throw o=!1,e;return r("throw",e)}),"function"==typeof e.return&&(n.return=function(e){return r("return",e)}),n},p.asyncToGenerator=function(e){return function(){var t=this,r=arguments;return new Promise(function(o,i){function u(e){n(a,o,i,u,c,"next",e)}function c(e){n(a,o,i,u,c,"throw",e)}var a=e.apply(t,r);u(void 0)})}},p.classCallCheck=function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")},p.createClass=function(e,t,r){return t&&o(e.prototype,t),r&&o(e,r),e},p.defineEnumerableProperties=function(e,t){for(var r in t)(i=t[r]).configurable=i.enumerable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,r,i);if(Object.getOwnPropertySymbols)for(var n=Object.getOwnPropertySymbols(t),o=0;o<n.length;o++){var i,u=n[o];(i=t[u]).configurable=i.enumerable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,u,i)}return e},p.defaults=function(e,t){for(var r=Object.getOwnPropertyNames(t),n=0;n<r.length;n++){var o=r[n],i=Object.getOwnPropertyDescriptor(t,o);i&&i.configurable&&void 0===e[o]&&Object.defineProperty(e,o,i)}return e},p.defineProperty=function(e,t,r){return t in e?Object.defineProperty(e,t,{value:r,enumerable:!0,configurable:!0,writable:!0}):e[t]=r,e},p.extends=i,p.objectSpread=function(e){for(var t=1;t<arguments.length;t++){var r=null==arguments[t]?{}:arguments[t],n=Object.keys(r);"function"==typeof Object.getOwnPropertySymbols&&(n=n.concat(Object.getOwnPropertySymbols(r).filter(function(e){return Object.getOwnPropertyDescriptor(r,e).enumerable}))),n.forEach(function(t){p.defineProperty(e,t,r[t])})}return e},p.inherits=function(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function");e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,writable:!0,configurable:!0}}),t&&p.setPrototypeOf(e,t)},p.getPrototypeOf=u,p.setPrototypeOf=c,p.construct=a,p.isNativeFunction=function(e){return-1!==Function.toString.call(e).indexOf("[native code]")},p.wrapNativeSuper=f,p.instanceof=function(e,t){return null!=t&&"undefined"!=typeof Symbol&&t[Symbol.hasInstance]?t[Symbol.hasInstance](e):e instanceof t},p.interopRequireDefault=function(e){return e&&e.__esModule?e:{default:e}},p.interopRequireWildcard=function(e){if(e&&e.__esModule)return e;var t={};if(null!=e)for(var r in e)if(Object.prototype.hasOwnProperty.call(e,r)){var n=Object.defineProperty&&Object.getOwnPropertyDescriptor?Object.getOwnPropertyDescriptor(e,r):{};n.get||n.set?Object.defineProperty(t,r,n):t[r]=e[r]}return t.default=e,t},p.newArrowCheck=function(e,t){if(e!==t)throw new TypeError("Cannot instantiate an arrow function")},p.objectDestructuringEmpty=function(e){if(null==e)throw new TypeError("Cannot destructure undefined")},p.objectWithoutPropertiesLoose=function(e,t){if(null==e)return{};var r,n,o={},i=Object.keys(e);for(n=0;n<i.length;n++)r=i[n],0<=t.indexOf(r)||(o[r]=e[r]);return o},p.objectWithoutProperties=function(e,t){if(null==e)return{};var r,n,o=p.objectWithoutPropertiesLoose(e,t);if(Object.getOwnPropertySymbols){var i=Object.getOwnPropertySymbols(e);for(n=0;n<i.length;n++)r=i[n],!(0<=t.indexOf(r))&&Object.prototype.propertyIsEnumerable.call(e,r)&&(o[r]=e[r])}return o},p.assertThisInitialized=function(e){if(void 0===e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return e},p.possibleConstructorReturn=function(e,t){return!t||"object"!==(void 0===t?"undefined":_typeof(t))&&"function"!=typeof t?p.assertThisInitialized(e):t},p.superPropBase=function(e,t){for(;!Object.prototype.hasOwnProperty.call(e,t)&&null!==(e=p.getPrototypeOf(e)););return e},p.get=l,p.set=function(e,t,r,n,o){if(!y(e,t,r,n||e)&&o)throw new Error("failed to set property");return r},p.taggedTemplateLiteral=function(e,t){return t||(t=e.slice(0)),Object.freeze(Object.defineProperties(e,{raw:{value:Object.freeze(t)}}))},p.temporalRef=function(e,t){if(e===p.temporalUndefined)throw new ReferenceError(t+" is not defined - temporal dead zone");return e},p.readOnlyError=function(e){throw new Error('"'+e+'" is read-only')},p.temporalUndefined={},p.slicedToArray=function(e,t){return p.arrayWithHoles(e)||p.iterableToArrayLimit(e,t)||p.nonIterableRest()},p.toArray=function(e){return p.arrayWithHoles(e)||p.iterableToArray(e)||p.nonIterableRest()},p.toConsumableArray=function(e){return p.arrayWithoutHoles(e)||p.iterableToArray(e)||p.nonIterableSpread()},p.arrayWithoutHoles=function(e){if(Array.isArray(e)){for(var t=0,r=Array(e.length);t<e.length;t++)r[t]=e[t];return r}},p.arrayWithHoles=function(e){if(Array.isArray(e))return e},p.iterableToArray=function(e){if(Symbol.iterator in Object(e)||"[object Arguments]"===Object.prototype.toString.call(e))return Array.from(e)},p.iterableToArrayLimit=function(e,t){var r=[],n=!0,o=!1,i=void 0;try{for(var u,c=e[Symbol.iterator]();!(n=(u=c.next()).done)&&(r.push(u.value),!t||r.length!==t);n=!0);}catch(e){o=!0,i=e}finally{try{n||null==c.return||c.return()}finally{if(o)throw i}}return r},p.nonIterableSpread=function(){throw new TypeError("Invalid attempt to spread non-iterable instance")},p.nonIterableRest=function(){throw new TypeError("Invalid attempt to destructure non-iterable instance")},p.toPropertyKey=function(e){var t=p.toPrimitive(e,"string");return"symbol"===(void 0===t?"undefined":_typeof(t))?t:t+""}}();</script><script src="src/ie-polyfills-feature-detection.js"></script><script>var isDev=document.location.href.indexOf("gui-dev")>-1;isDev?(window.VT_TIMER={},VT_TIMER.startDate=new Date,VT_TIMER.getSeconds=function(){return(new Date-VT_TIMER.startDate)/1e3},VT_TIMER.log=function(e){console.info("[VT-TIMER]: "+e+" ("+VT_TIMER.getSeconds()+" seconds)")}):window.VT_TIMER={log:function(){}};var baseUrl=document.querySelector("base").href;window.Polymer={rootPath:baseUrl};var VTConfig={"env":"https://www.virustotal.com/ui","signInEnv":"https://www.virustotal.com","authFallbackUrl":"https://www.virustotal.com/gui/sign-in","captchaSiteKey":"6Lf-dg0UAAAAAC6JRsPoQcwfOi9MNW7RM4bA3byR","hostname":"https://www.virustotal.com/gui/","gaKey":"UA-27433547-2","timestamp":"20190808t090157","enableSW":true};"serviceWorker"in navigator&&window.addEventListener("load",function(){if(VTConfig.enableSW){var e=!1;navigator.serviceWorker.getRegistrations().then(function(t){var n=!0,o=!1,r=void 0;try{for(var a,i=t[Symbol.iterator]();!(n=(a=i.next()).done);n=!0){a.value.scope==VTConfig.hostname&&(e=!0)}}catch(e){o=!0,r=e}finally{try{!n&&i.return&&i.return()}finally{if(o)throw r}}navigator.serviceWorker.register("service-worker.js",{scope:Polymer.rootPath}).then(function(t){t.update(),VT_TIMER.log("Registered SW"),t.onupdatefound=function(n){var o=t.installing;o.onstatechange=function(t){"installed"==o.state&&e&&location.reload()}}})})}else navigator.serviceWorker.getRegistrations().then(function(e){var t=!0,n=!1,o=void 0;try{for(var r,a=e[Symbol.iterator]();!(t=(r=a.next()).done);t=!0){var i=r.value;i.scope==VTConfig.hostname&&i.unregister().then(function(e){e&&VT_TIMER.log("unregistered sw")})}}catch(e){n=!0,o=e}finally{try{!t&&a.return&&a.return()}finally{if(n)throw o}}})});</script><script>document.location.hash&&(document.location.href=baseUrl+document.location.hash.substr(2));</script><script src="https://cdn.rawgit.com/GoogleCloudPlatform/stackdriver-errors-js/v0.4.0/dist/stackdriver-errors-concat.min.js"></script><script type="text/javascript">window.addEventListener("DOMContentLoaded",function(){function t(t){return t&&t.length>500?t.substr(0,150)+" ... "+t.substr(t.length-150):t}VT_TIMER.log("Content loaded");try{if(document.location.origin.indexOf("virustotal.com")>-1){var e=document.location.href.indexOf("gui-dev")>-1,n=new StackdriverErrorReporter,r=e?"virutotal-ui-main-dev":"virutotal-ui-main";n.start({key:"AIzaSyDg8xzc7lNh2NHysOFc5hKk7c0_A6GdkUo",projectId:"virustotal-ui-error-reporting",service:r,reportUncaughtExceptions:!1,version:VTConfig.timestamp}),document.querySelector("vt-virustotal-app").addEventListener("user-changed",function(t){var e=t.detail.value;n.context.user=e?t.detail.value.id:void 0}),window.onerror=function(r,o,i,a,s){s&&(s.message&&(s.message=t(s.message)),s.fileName&&(s.fileName=t(s.fileName)),s.stack&&(s.stack=function(t){if(t&&t.length>1e3){for(var e=t.split(" at "),n=e[0],r=1;r<e.length;r++){var o=e[r],i=(o.split(" ")[0],o.split("https")),a=i[i.length-1];n+="\n at https"+decodeURIComponent(a.substr(0,a.length-4).replace("%0A",""))}return n}return t}(s.stack)),n.report(s,function(){e&&console.info("[Error catched]: "+s),"Unsupported app"==s.message&&unsupportedAction()}))}}}catch(t){console.warn("Stackdriver not initiated",t)}});</script><script>function unsupportedAction(){var e=document.getElementById("retro");e&&(e.style.display="block")}function unsupportedError(){throw new Error("Unsupported app")}window.displayCookieMessage=!1,document.addEventListener("supported-app",function(e){removeUxTrick(),VT_TIMER.log("App supported and connected"),clearTimeout(supportedAppTimeout)});var supportedAppTimeout=setTimeout(function(){console.log("App did not load (Unsupported app)"),unsupportedAction(),unsupportedError()},1e4);function removeUxTrick(){var e=document.querySelector("vt-virustotal-app"),o=document.getElementById("ux-trick");try{o.style.opacity="0",document.body.removeChild(o),e.removeAttribute("hidden"),VT_TIMER.log("View ready and hidden trick")}catch(e){}}var oldBrowsersAnchor=document.getElementById("oldBrowsersAnchor"),link=document.location.href.replace(baseUrl,"");if(link&&(0==link.indexOf("file/")||0==link.indexOf("url/"))){var type=link.split("/")[0],id=link.split("/")[1];link=type+"/"+id,oldBrowsersAnchor.setAttribute("href",oldBrowsersAnchor.href+link)}</script><script>window.customElements||document.write("\x3c!--");</script><script type="text/javascript" src="bower_components/webcomponentsjs/custom-elements-es5-adapter.js"></script><!--! do not remove --><script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script><link rel="import" href="src/vt-virustotal-app.html"><vt-virustotal-app hidden=""></vt-virustotal-app><noscript>Please enable JavaScript to view this website.</noscript></body></html>
