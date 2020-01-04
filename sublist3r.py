@@ -168,7 +168,7 @@ class enumratorBase(object):
 
         url = self.base_url.format(query=query, page_no=page_no)
 
-        proxies = {"http": "http://127.0.0.1:8001","https": "http://127.0.0.1:8001"}
+        proxies = {"http": "http://127.0.0.1:1087","https": "http://127.0.0.1:1087"}
         try:
             resp = self.session.get(url, headers=self.headers, timeout=self.timeout, proxies = proxies)
         except Exception:
@@ -212,7 +212,7 @@ class enumratorBase(object):
 
     def get_page(self, num):
         """ chlid class that user different pagnation counter should override this function """
-        return num + 10
+        return num + 2
 
     def enumerate(self, altquery=False):
         flag = True
@@ -275,7 +275,7 @@ class GoogleEnum(enumratorBaseThreaded):
         base_url = "https://www.google.com/search?q={query}&start={page_no}&filter=0"
         self.engine_name = "Google"
         self.MAX_DOMAINS = 11
-        self.MAX_PAGES = 200
+        self.MAX_PAGES = 20
         super(GoogleEnum, self).__init__(base_url, self.engine_name, domain, subdomains, q=q, silent=silent, verbose=verbose)
         self.q = q
         return
@@ -289,6 +289,8 @@ class GoogleEnum(enumratorBaseThreaded):
                 link = re.sub('<span.*>', '', link)
                 if not link.startswith('http'):
                     link = "http://" + link
+                if not link.endswith(self.domain):
+                    link = link[:link.index(self.domain)+len(self.domain)]
                 subdomain = urlparse.urlparse(link).netloc
                 if subdomain and subdomain not in self.subdomains and subdomain != self.domain:
                     if self.verbose:
@@ -325,7 +327,7 @@ class YahooEnum(enumratorBaseThreaded):
         base_url = "https://search.yahoo.com/search?p={query}&b={page_no}"
         self.engine_name = "Yahoo"
         self.MAX_DOMAINS = 10
-        self.MAX_PAGES = 0
+        self.MAX_PAGES = 10
         super(YahooEnum, self).__init__(base_url, self.engine_name, domain, subdomains, q=q, silent=silent, verbose=verbose)
         self.q = q
         return
@@ -376,7 +378,7 @@ class AskEnum(enumratorBaseThreaded):
         base_url = 'http://www.ask.com/web?q={query}&page={page_no}'
         self.engine_name = "Ask"
         self.MAX_DOMAINS = 11
-        self.MAX_PAGES = 0
+        self.MAX_PAGES = 10
         enumratorBaseThreaded.__init__(self, base_url, self.engine_name, domain, subdomains, q=q, silent=silent, verbose=verbose)
         self.q = q
         return
@@ -419,7 +421,7 @@ class BingEnum(enumratorBaseThreaded):
         base_url = 'https://www.bing.com/search?q={query}&go=Submit&first={page_no}'
         self.engine_name = "Bing"
         self.MAX_DOMAINS = 30
-        self.MAX_PAGES = 0
+        self.MAX_PAGES = 10
         enumratorBaseThreaded.__init__(self, base_url, self.engine_name, domain, subdomains, q=q, silent=silent)
         self.q = q
         self.verbose = verbose
@@ -463,7 +465,7 @@ class BaiduEnum(enumratorBaseThreaded):
         subdomains = subdomains or []
         base_url = 'https://www.baidu.com/s?pn={page_no}&wd={query}&oq={query}'
         self.engine_name = "Baidu"
-        self.MAX_DOMAINS = 2
+        self.MAX_DOMAINS = 20
         self.MAX_PAGES = 760
         enumratorBaseThreaded.__init__(self, base_url, self.engine_name, domain, subdomains, q=q, silent=silent, verbose=verbose)
         self.querydomain = self.domain
@@ -530,7 +532,7 @@ class NetcraftEnum(enumratorBaseThreaded):
 
     def req(self, url, cookies=None):
         cookies = cookies or {}
-        proxies = {"http": "http://127.0.0.1:8001","https": "http://127.0.0.1:8001"}
+        proxies = {"http": "http://127.0.0.1:1087","https": "http://127.0.0.1:1087"}
         try:
             resp = self.session.get(url, headers=self.headers, timeout=self.timeout, cookies=cookies, proxies = proxies)
         except Exception as e:
@@ -624,7 +626,7 @@ class DNSdumpster(enumratorBaseThreaded):
         params = params or {}
         headers = dict(self.headers)
         headers['Referer'] = 'https://dnsdumpster.com'
-        proxies = {"http": "http://127.0.0.1:8001","https": "http://127.0.0.1:8001"}
+        proxies = {"http": "http://127.0.0.1:1087","https": "http://127.0.0.1:1087"}
         try:
             if req_method == 'GET':
                 resp = self.session.get(url, headers=headers, timeout=self.timeout, proxies=proxies)
@@ -683,7 +685,7 @@ class Virustotal(enumratorBaseThreaded):
 
     # the main send_req need to be rewritten
     def send_req(self, url):
-        proxies = {"http": "http://127.0.0.1:8001","https": "http://127.0.0.1:8001"}
+        proxies = {"http": "http://127.0.0.1:1087","https": "http://127.0.0.1:1087"}
         try:
             resp = self.session.get(url, headers=self.headers, timeout=self.timeout, proxies=proxies)
         except Exception as e:
@@ -725,7 +727,7 @@ class ThreatCrowd(enumratorBaseThreaded):
         return
 
     def req(self, url):
-        proxies = {"http": "http://127.0.0.1:8001","https": "http://127.0.0.1:8001"}
+        proxies = {"http": "http://127.0.0.1:1087","https": "http://127.0.0.1:1087"}
         try:
             resp = self.session.get(url, headers=self.headers, timeout=self.timeout, proxies=proxies)
         except Exception:
@@ -753,6 +755,156 @@ class ThreatCrowd(enumratorBaseThreaded):
         except Exception as e:
             pass
 
+class HackertSearch(enumratorBaseThreaded):
+    def __init__(self, domain, subdomains=None, q=None, silent=False, verbose=True):
+        subdomains = subdomains or []
+        base_url = 'https://api.hackertarget.com/hostsearch/?q={domain}'
+        self.engine_name = "Hackert"
+        self.lock = threading.Lock()
+        self.q = q
+        super(HackertSearch, self).__init__(base_url, self.engine_name, domain, subdomains, q=q, silent=silent, verbose=verbose)
+        return
+
+    def req(self, url):
+        proxies = {"http": "http://127.0.0.1:1087","https": "http://127.0.0.1:1087"}
+        try:
+            resp = self.session.get(url, headers=self.headers, timeout=self.timeout, proxies=proxies)
+        except Exception:
+            resp = None
+
+        return self.get_response(resp)
+
+    def enumerate(self):
+        url = self.base_url.format(domain=self.domain)
+        resp = self.req(url)
+        if resp:
+            self.extract_domains(resp)
+        return self.subdomains
+
+    def extract_domains(self, resp):
+        try:
+            res = resp.split('\n')
+            for subdomain in res:
+                subdomain = subdomain.split(',')[0]
+                if self.domain in subdomain and subdomain not in self.subdomains and subdomain != self.domain:
+                    if self.verbose:
+                        self.print_("%s%s: %s%s" % (R, self.engine_name, W, subdomain))                    
+                    self.subdomains.append(subdomain.strip())
+        except Exception as e:
+            pass    
+
+class SitedossierSearch(enumratorBaseThreaded):
+    def __init__(self, domain, subdomains=None, q=None, silent=False, verbose=True):
+        subdomains = subdomains or []
+        base_url = 'http://www.sitedossier.com/parentdomain/{domain}'
+        self.engine_name = "Sitedossier"
+        self.lock = threading.Lock()
+        self.q = q
+        super(SitedossierSearch, self).__init__(base_url, self.engine_name, domain, subdomains, q=q, silent=silent, verbose=verbose)
+        return
+
+    def req(self, url):
+        proxies = {"http": "http://127.0.0.1:1087","https": "http://127.0.0.1:1087"}
+        try:
+            resp = self.session.get(url, headers=self.headers, timeout=self.timeout, proxies=proxies)
+        except Exception:
+            resp = None
+
+        return self.get_response(resp)
+
+    def enumerate(self):
+        url = self.base_url.format(domain=self.domain)
+        resp = self.req(url)
+        if resp:
+            self.extract_domains(resp)
+        return self.subdomains
+
+    def extract_domains(self, resp):
+        try:
+            res = re.findall('<a href="/site/(.*?)">', resp)
+            for subdomain in res:
+                if self.domain in subdomain and subdomain not in self.subdomains and subdomain != self.domain:
+                    if self.verbose:
+                        self.print_("%s%s: %s%s" % (R, self.engine_name, W, subdomain))                    
+                    self.subdomains.append(subdomain.strip())
+        except Exception as e:
+            pass    
+
+class CertspotterSearch(enumratorBaseThreaded):
+    def __init__(self, domain, subdomains=None, q=None, silent=False, verbose=True):
+        subdomains = subdomains or []
+        base_url = 'https://api.certspotter.com/v1/issuances?domain={domain}&include_subdomains=true&expand=dns_names'
+        self.engine_name = "Certspotter"
+        self.lock = threading.Lock()
+        self.q = q
+        super(CertspotterSearch, self).__init__(base_url, self.engine_name, domain, subdomains, q=q, silent=silent, verbose=verbose)
+        return
+
+    def req(self, url):
+        proxies = {"http": "http://127.0.0.1:1087","https": "http://127.0.0.1:1087"}
+        try:
+            resp = self.session.get(url, headers=self.headers, timeout=self.timeout, proxies=proxies)
+        except Exception:
+            resp = None
+
+        return self.get_response(resp)
+
+    def enumerate(self):
+        url = self.base_url.format(domain=self.domain)
+        resp = self.req(url)
+        if resp:
+            self.extract_domains(resp)
+        return self.subdomains
+
+    def extract_domains(self, resp):
+        rest = json.loads(resp)
+        for c in rest:
+            try:
+                for subdomain in (c['dns_names']):
+                    if self.domain in subdomain and subdomain not in self.subdomains and subdomain != self.domain:
+                        if self.verbose:
+                            self.print_("%s%s: %s%s" % (R, self.engine_name, W, subdomain))
+                        self.subdomains.append(subdomain.replace('*.','').strip())
+            except:
+                pass
+
+class ThreatminerSearch(enumratorBaseThreaded):
+    def __init__(self, domain, subdomains=None, q=None, silent=False, verbose=True):
+        subdomains = subdomains or []
+        base_url = 'https://www.threatminer.org/getData.php?e=subdomains_container&q={domain}&t=0&rt=10&p=1'
+        self.engine_name = "Threatminer"
+        self.lock = threading.Lock()
+        self.q = q
+        super(ThreatminerSearch, self).__init__(base_url, self.engine_name, domain, subdomains, q=q, silent=silent, verbose=verbose)
+        return
+
+    def req(self, url):
+        proxies = {"http": "http://127.0.0.1:1087","https": "http://127.0.0.1:1087"}
+        try:
+            resp = self.session.get(url, headers=self.headers, timeout=self.timeout, proxies=proxies)
+        except Exception:
+            resp = None
+
+        return self.get_response(resp)
+
+    def enumerate(self):
+        url = self.base_url.format(domain=self.domain)
+        resp = self.req(url)
+        if resp:
+            self.extract_domains(resp)
+        return self.subdomains
+
+    def extract_domains(self, resp):
+        try:
+            res = re.findall('href="domain.*?">(.*?)</a>', resp)
+            for subdomain in res:
+                if self.domain in subdomain and subdomain not in self.subdomains and subdomain != self.domain:
+                    if self.verbose:
+                        self.print_("%s%s: %s%s" % (R, self.engine_name, W, subdomain))
+                    self.subdomains.append(subdomain.strip())
+        except:
+            pass
+
 
 class CrtSearch(enumratorBaseThreaded):
     def __init__(self, domain, subdomains=None, q=None, silent=False, verbose=True):
@@ -765,7 +917,7 @@ class CrtSearch(enumratorBaseThreaded):
         return
 
     def req(self, url):
-        proxies = {"http": "http://127.0.0.1:8001","https": "http://127.0.0.1:8001"}
+        proxies = {"http": "http://127.0.0.1:1087","https": "http://127.0.0.1:1087"}
         try:
             resp = self.session.get(url, headers=self.headers, timeout=self.timeout, proxies=proxies)
         except Exception:
@@ -800,6 +952,7 @@ class CrtSearch(enumratorBaseThreaded):
             pass
 
 
+
 class PassiveDNS(enumratorBaseThreaded):
     def __init__(self, domain, subdomains=None, q=None, silent=False, verbose=True):
         subdomains = subdomains or []
@@ -811,7 +964,7 @@ class PassiveDNS(enumratorBaseThreaded):
         return
 
     def req(self, url):
-        proxies = {"http": "http://127.0.0.1:8001","https": "http://127.0.0.1:8001"}
+        proxies = {"http": "http://127.0.0.1:1087","https": "http://127.0.0.1:1087"}
         try:
             resp = self.session.get(url, headers=self.headers, timeout=self.timeout, proxies=proxies)
         except Exception as e:
@@ -839,6 +992,120 @@ class PassiveDNS(enumratorBaseThreaded):
         except Exception as e:
             pass
 
+class SecuritytrailsSearch(enumratorBaseThreaded):
+    def __init__(self, domain, subdomains=None, q=None, silent=False, verbose=True):
+        subdomains = subdomains or []
+        base_url = 'https://api.securitytrails.com/v1/domain/{domain}/subdomains?apikey=xxx'
+        self.engine_name = "Securitytrails"
+        self.lock = threading.Lock()
+        self.q = q
+        super(SecuritytrailsSearch, self).__init__(base_url, self.engine_name, domain, subdomains, q=q, silent=silent, verbose=verbose)
+        return
+
+    def req(self, url):
+        proxies = {"http": "http://127.0.0.1:1087","https": "http://127.0.0.1:1087"}
+        try:
+            resp = self.session.get(url, headers=self.headers, timeout=self.timeout, proxies=proxies)
+        except Exception:
+            resp = None
+
+        return self.get_response(resp)
+
+    def enumerate(self):
+        url = self.base_url.format(domain=self.domain)
+        resp = self.req(url)
+        if resp:
+            self.extract_domains(resp)
+        return self.subdomains
+
+    def extract_domains(self, resp):
+        try:
+            res = json.loads(resp)['subdomains']
+            for subdomain in res:
+                subdomain = subdomain+'.'+self.domain
+                if self.domain in subdomain and subdomain not in self.subdomains and subdomain != self.domain:
+                    if self.verbose:
+                        self.print_("%s%s: %s%s" % (R, self.engine_name, W, subdomain))
+                    self.subdomains.append(subdomain.strip())
+        except:
+            pass
+
+class XimcxSearch(enumratorBaseThreaded):
+    def __init__(self, domain, subdomains=None, q=None, silent=False, verbose=True):
+        subdomains = subdomains or []
+        base_url = 'http://sbd.ximcx.cn/DomainServlet'
+        self.engine_name = "Ximcx"
+        self.lock = threading.Lock()
+        self.q = q
+        super(XimcxSearch, self).__init__(base_url, self.engine_name, domain, subdomains, q=q, silent=silent, verbose=verbose)
+        return
+
+    def req(self, url):
+        proxies = {"http": "http://127.0.0.1:1087","https": "http://127.0.0.1:1087"}
+        params = {'domain': self.domain}
+        try:
+            resp = self.session.post(url, headers=self.headers, timeout=self.timeout, proxies=proxies, params=params)
+        except Exception:
+            resp = None
+
+        return self.get_response(resp)
+
+    def enumerate(self):
+        url = self.base_url
+        resp = self.req(url)
+        if resp:
+            self.extract_domains(resp)
+        return self.subdomains
+
+    def extract_domains(self, resp):
+        try:
+            res = json.loads(resp)['data']
+            for subdomain in res:
+                subdomain = subdomain['domain']
+                if self.domain in subdomain and subdomain not in self.subdomains and subdomain != self.domain:
+                    if self.verbose:
+                        self.print_("%s%s: %s%s" % (R, self.engine_name, W, subdomain))
+                    self.subdomains.append(subdomain.strip())
+        except:
+            pass
+
+class EntrustSearch(enumratorBaseThreaded):
+    def __init__(self, domain, subdomains=None, q=None, silent=False, verbose=True):
+        subdomains = subdomains or []
+        base_url = 'https://ctsearch.entrust.com/api/v1/certificates?/api/v1/certificates?fields=subjectDN&domain={domain}&includeExpired=true&exactMatch=false&limit=5000'
+        self.engine_name = "entrust"
+        self.lock = threading.Lock()
+        self.q = q
+        super(EntrustSearch, self).__init__(base_url, self.engine_name, domain, subdomains, q=q, silent=silent, verbose=verbose)
+        return
+
+    def req(self, url):
+        proxies = {"http": "http://127.0.0.1:1087","https": "http://127.0.0.1:1087"}
+        try:
+            resp = self.session.get(url, headers=self.headers, timeout=self.timeout, proxies=proxies)
+        except Exception:
+            resp = None
+
+        return self.get_response(resp)
+
+    def enumerate(self):
+        url = self.base_url.format(domain=self.domain)
+        resp = self.req(url)
+        if resp:
+            self.extract_domains(resp)
+        return self.subdomains
+
+    def extract_domains(self, resp):
+        try:
+            res = json.loads(resp)
+            for subdomain in res:
+                subdomain = subdomain['subjectDN'].split(',')[0].replace('cn=', '').replace('*.', '')
+                if self.domain in subdomain and subdomain not in self.subdomains and subdomain != self.domain:
+                    if self.verbose:
+                        self.print_("%s%s: %s%s" % (R, self.engine_name, W, subdomain))
+                    self.subdomains.append(subdomain.strip())
+        except:
+            pass
 
 class portscan():
     def __init__(self, subdomains, ports):
@@ -910,8 +1177,15 @@ def main(domain, threads, savefile, ports, silent, verbose, enable_bruteforce, e
                          'dnsdumpster': DNSdumpster,
                          'virustotal': Virustotal,
                          'threatcrowd': ThreatCrowd,
+                         'passivedns': PassiveDNS,
                          'ssl': CrtSearch,
-                         'passivedns': PassiveDNS
+                         'certspotter': CertspotterSearch,
+                         'sitedossier': SitedossierSearch,
+                         'hackert': HackertSearch,
+                         'threatminer': ThreatminerSearch,
+                         'securitytrails': SecuritytrailsSearch,
+                         'ximcx': XimcxSearch,
+                         'entrust': EntrustSearch
                          }
 
     chosenEnums = []
@@ -920,7 +1194,9 @@ def main(domain, threads, savefile, ports, silent, verbose, enable_bruteforce, e
         chosenEnums = [
             BaiduEnum, YahooEnum, GoogleEnum, BingEnum, AskEnum,
             NetcraftEnum, DNSdumpster, Virustotal, ThreatCrowd,
-            CrtSearch, PassiveDNS
+            CrtSearch, PassiveDNS, CertspotterSearch, SitedossierSearch,
+            HackertSearch, ThreatminerSearch, SecuritytrailsSearch,XimcxSearch,
+            EntrustSearch
         ]
     else:
         engines = engines.split(',')
